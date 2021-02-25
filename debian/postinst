@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -e
+
+. /etc/default/openmediavault
+. /usr/share/openmediavault/scripts/helper-functions
+
+case "$1" in
+    configure)
+        # Activate package triggers
+        dpkg-trigger update-fixperms
+        dpkg-trigger update-locale
+
+        # add to mdadm.conf
+        omv-salt deploy run --no-color mdadm || :
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument" >&2
+        exit 1
+    ;;
+esac
+
+exit 0
